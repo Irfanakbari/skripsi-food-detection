@@ -1,101 +1,93 @@
-import Image from "next/image";
+'use client'
+import React, {useState} from "react";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Progress} from "@/components/ui/progress";
+import {UploadCloud} from "lucide-react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    const [file, setFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState<any>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0] || null;
+        setFile(selectedFile);
+    };
+
+    const handleUpload = async () => {
+        if (!file) return;
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch("/api/predict", {
+                method: "POST",
+                body: formData,
+            });
+            const data = await response.json();
+            setResult(data);
+        } catch (error) {
+            console.error("Upload failed:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
+            <img src="/usu.png" alt="Logo" className="w-24 h-24 mb-4" />
+            <h1 className="text-3xl font-bold text-black mb-6 text-center">
+                Halal Food Detection Using OCR & Fuzzy String Matching
+            </h1>
+            <Card className="w-full max-w-4xl p-8 bg-white shadow-lg rounded-2xl">
+                <CardContent className="space-y-6 text-center">
+                    <Label className="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 p-8">
+                        <UploadCloud className="w-14 h-14 text-gray-500" />
+                        <span className="mt-2 text-sm text-gray-500">Click to upload an image</span>
+                        <Input type="file" className="hidden" onChange={handleFileChange} accept="image/*" />
+                    </Label>
+                    {file && <p className="text-sm text-gray-600">Selected: {file.name}</p>}
+                    <Button onClick={handleUpload} disabled={!file || loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                        {loading ? "Processing..." : "Upload & Analyze"}
+                    </Button>
+                    {loading && <Progress className="w-full" value={50} />}
+                    {result && (
+                        <div className="mt-8 text-left bg-gray-50 p-6 rounded-lg shadow-md">
+                            <div className={`mb-4 text-center text-lg font-bold rounded p-3 ${
+                                result.detectedNonHalal.length > 0 ? 'bg-red-300' : 'bg-green-300'
+                            }`}>
+                                {result.detectedNonHalal.length > 0 ? (
+                                    <span className="text-red-600">HARAM</span>
+                                ) : (
+                                    <span className="text-green-600">HALAL</span>
+                                )}
+                            </div>
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
+                            <div className="space-y-3">
+                                <p className="text-sm text-gray-700"><strong>OCR:</strong> {result.ocrText}</p>
+                                <p className="text-sm text-gray-700"><strong>Cleaned Text:</strong> {result.geminiText}</p>
+                                <p className="text-sm text-gray-700 font-semibold">Detected Ingredients:</p>
+                                <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
+                                    {result.detectedNonHalal.length > 0 ? (
+                                        result.detectedNonHalal.map((item: any, index: number) => (
+                                            <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)})</li>
+                                        ))
+                                    ) : (
+                                        <li className="text-green-600">No non-halal ingredients detected</li>
+                                    )}
+                                </ul>
+                                <div className="flex justify-center mt-4">
+                                    <img src={result.imageUrl} alt="Uploaded" className="w-full max-w-md rounded-lg shadow-md" />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
