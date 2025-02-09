@@ -5,9 +5,21 @@ import {translate} from '@vitalets/google-translate-api';
 import FuzzySet from 'fuzzyset.js';
 import {GoogleGenerativeAI} from "@google/generative-ai";
 
-const storage = new Storage();
+const storage = new Storage({
+    credentials: {
+        client_email: process.env.GCP_SERVICE_ACCOUNT_EMAIL ?? '',
+        private_key: process.env.GCP_PRIVATE_KEY ?? '',
+    },
+    projectId: process.env.GCP_PROJECT_ID ?? ''
+});
 const bucketName = 'fitri-user-image';
-const visionClient = new vision.ImageAnnotatorClient();
+const visionClient = new vision.ImageAnnotatorClient({
+    credentials: {
+        client_email: process.env.GCP_SERVICE_ACCOUNT_EMAIL ?? '',
+        private_key: process.env.GCP_PRIVATE_KEY ?? '',
+    },
+    projectId: process.env.GCP_PROJECT_ID ?? ''
+});
 
 const apiKey = process.env.GEMINI_API ?? '';
 const genAI = new GoogleGenerativeAI(apiKey);

@@ -20,6 +20,8 @@ export default function Home() {
     const handleUpload = async () => {
         if (!file) return;
         setLoading(true);
+        setResult(null); // Reset result sebelum upload baru
+
         const formData = new FormData();
         formData.append("file", file);
 
@@ -28,14 +30,21 @@ export default function Home() {
                 method: "POST",
                 body: formData,
             });
+
+            if (!response.ok) {
+                throw new Error(`Server error ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
             setResult(data);
         } catch (error) {
             console.error("Upload failed:", error);
+            setResult({ error: "Failed to process the file. Please try again later." });
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
@@ -55,6 +64,12 @@ export default function Home() {
                         {loading ? "Processing..." : "Upload & Analyze"}
                     </Button>
                     {loading && <Progress className="w-full" value={50} />}
+                    {result?.error && (
+                        <div className="mt-4 p-4 bg-red-100 text-red-600 rounded-md">
+                            {result.error}
+                        </div>
+                    )}
+
                     {result && (
                         <div className="mt-8 text-left bg-gray-50 p-6 rounded-lg shadow-md">
                             <div className={`mb-4 text-center text-lg font-bold rounded p-3 ${
