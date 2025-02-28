@@ -44,15 +44,32 @@ const nonHalalIngredients: string[] = [
     "carmine", "E441", "E120", "enzymes", "lipase", "trypsin", "rennin",
     "pepsin", "alkohol", "alcohol", "beer", "wine", "whiskey", "vodka",
     "gin", "rum", "brandy", "tequila", "cider", "sake", "mirin",
-    "darah", "blood", "black pudding", "blood sausage"
+    "darah", "blood", "black pudding", "blood sausage", "dwaejigogi", "donji", "yugsu","sul","porkfat", "ethanol", "vanilla extract", "vanilin extract", "lecithin", "glycerin", "glycerol", "rennet", "rennin", "dongmulseong" ,"yuji", "tallow", "marshmellow", "glyceride", "hogleather","pig", "wine", "jelly", "bacon", "sow milk"
 ];
 
 const fuzzySet = FuzzySet(nonHalalIngredients);
 
+// async function translateToEnglish(source: string, targetLanguage = 'en'): Promise<string> {
+//     const { text } = await translate(source, { to: targetLanguage });
+//     return text;
+// }
+
 async function translateToEnglish(source: string, targetLanguage = 'en'): Promise<string> {
-    const { text } = await translate(source, { to: targetLanguage });
-    return text;
+    const result = await translate(source, { to: targetLanguage });
+
+    // Ambil bahasa sumber dari properti `raw.src`
+    const detectedLanguage = result.raw?.src;
+
+    if (detectedLanguage !== 'ko') {
+        const error = new Error('Translation is only allowed for Korean text.');
+        (error as any).statusCode = 400; // Tandai error dengan status 400
+        throw error;
+    }
+
+    return result.text;
 }
+
+
 async function runCleaner(input: string) {
     const parts = [
         {text: "Please remove unnecessary word in food commposition, and extract only food composition."},
@@ -62,6 +79,18 @@ async function runCleaner(input: string) {
         {text: "output: glass Amino acid surface -to -soybeans, brewing, brewed, soybeans, refined stations, sugar, other fructose, bafure pear domestic, vitamin C, purified water, onion pure Chinese, minced garlic apple pure apple Paemit, Caramel Soldier III, Pepper, Pepper Primulates, Mountain Controls, Zantan Sword, Citrus Extract"},
         {text: "input: PEACH PEACH BON MAT HAICHED with Peach Sacs Juice RP Peach Each week, Fi, Chungnam -gu, Cheonan -si, Chungnam -gu, Cheon -gu, Gyeongbuk COE Consumption Economic Dogs Dogs Economic Water, Dangrup, Grape Granal Chinese, Grape Located Italy Asan, Mixed Contents Grape Grape Juice Restorous Standards, Citric acid, Synthetic Fragrance Vine If the variable Pyeongchang is damaged or the contents are altered, do not drink it. Please do not drink it after opening. Senior Products Exchange Customer Counseling Office and Each Purchasing Products can be exchanged or compensated by the FTC notice. It is manufactured in the contents that natural and the environment is beautifully charged nitrogen cleansing www tbcokr As it is KCAL standard, it may vary depending on the amount of calories required rawberry onbon This is an extract of Haital Crushed Strawberry Ju ML Spessifikasi M Kode Barang rp dlatte"},
         {text: "output: Water, Dangrup, Grape Granal Chinese, Grape Located Italy Asan, Mixed Contents Grape Grape Juice Restorous Standards, Citric acid, Synthetic Fragrance Vine"},
+        {text: "input: Crispy Bada MOA Sea Spicy Badamoa CRISPY S Product name spicy flavored blue stone jaccaly 35g of content 43 of Kim Ja ban domestic jade oil 100 of the eyes of Oksu san foreign US Lazil Russia etc 32 red pepper powder Vietnamsan 10 sugar 6 fields INA 3 raw material name China taste salt 90 of refined salt domestic Lglutam And content sodium flavors 99  5 lods 005  5 005Guanylic acid inathasonate 2 sesame oil foreign India Niger Oh Pakistan etc 2 sesame seeds foreign India Nigeria Pakistan etc 2 Manufacturer and Salesman Daeyang Food Co Ltd 36 Hanam daero Hanam si Gyeonggi do 36 Sangsangok dong Item report number 2006034513128 Packaging material polyethylene inner Consumer Counseling Office 0317952982 S p ri"},
+        {text: "output: Domestic jade oil 100%, red pepper powder (Vietnam) 32%, sugar 10%, flavored salt (refined salt 90%, sodium L-glutamate 99.5%, guanylic acid 0.5%), sesame oil (India, Nigeria, Pakistan) 2%, sesame seeds (India, Nigeria, Pakistan) 2%"},
+        {text: "input: Container and packaging material PP Inner pavement PET tray caution Do not eat harmlessness in the human body Consumer Counseling Office 042 6280725 Homepage wwwsgkimcokr  How to store Avoid direct sunlight and moisture places to keep them in a cool and well ventilated place to feel the taste and fragrance of Kim  This product is turbulent milk buckwheat peanuts soybeans wheat mackerel crab shrimp peach tomato sulfur walnuts chicken beef pork squid It is manufactured in manufacturing facilities such as shellfish including oysters abalone mussels and pine nuts  This product is made by processing raw materials obtained from the sea Shrimp crab seaweed and shellfish can be mixed  Return and exchange This product can be exchanged or compensated by purchasing units or distributors in accordance with the Fair Trade Commissions notice of dispute resolution there is 1399 without a certificate of illegal and bad food"},
+        {text: "output: milk, buckwheat, peanuts, soybeans, wheat, mackerel, crab, shrimp, peach, tomato, sulfur, walnuts, chicken, beef, pork, squid, oysters, abalone, mussels, pine nuts, seaweed"},
+        {text: "input: Open Wondertok Shooting Stor Choco Stick Chocolate shooting star Product name chocolate stick shooting star Food type chocolate products Manufacturer and Salesman Sunyoung Food Co Ltd Expiration date  154g of contents until separate notation date Confectionery wheat US Australian acid sugar shorting palm oil Malaysia Corn starch foreign Russia Hungary Serbia Hydrogen ammonium sodium hydrogen carbonate semi chocolate I 2944 plant maintenance I Raw material name palm nuclear lighting oil Malaysia sugar oil domestic cocoe male 872 Mt Mulis syrup lactose associate chocolate II 15 sugar vegetable maintenance farm nuclearization Malaysia Yucheong domestic 968 of coco aggregates Singapore Plantic maintenance It contains wheat milk soybeans"},
+        {text: "output: wheat, sugar, palm oil, corn starch, ammonium, sodium hydrogen carbonate, semi chocolate, syrup, lactose, chocolate, vegetable oil, coco aggregates, milk, soybeans"},
+        {text: "input: Product name Peanut Food type chocolate products Manufacturer and Salesman Sunyoung Food Co Ltd Until the expiration date Content Raw material name Certain ingredients 54g Confectionery Flour US Australia Australians sugar shorting palm oil Malaysia Corn starch foreign Russia Hungary Serbia Hydrogen Ammonium sodium hydrogen carbonate associate chocolate I Malaysia sugar cocoal Latvia Coco Agun Singapore Maintenance II fried peanuts 100peanuts Argentina associate chocolate Sugar processed maintenance palm nuclear coordinate malaysia Coco Agal Singapore maintenance of processing I Contains wheat milk soybeans peanuts 40cocoe powder 194fried peanuts  Courage packaging Material Packaging Polypropylene inner Item report number 201304490131 This product is manufactured in the same manufacturing facilities as a product using walnuts This product may be replaced or refunded for justifiable consumer damage in accordance with the Consumer Dispute Resolution Criteria under the Basic Consumer Basic Law Please avoid direct sunlight and moisture places  French food reporting 1399 without country number Customer Satisfaction Room 0416227723  Return and exchange location Headquarters and purchase place"},
+        {text: "output: Flour, sugar, shortening palm oil, corn starch, hydrogen ammonium sodium hydrogen carbonate, chocolate, sugar, cocoa, fried peanuts, wheat, milk, soybeans, cocoa powder."},
+        {text: "input: Ch Stoire She initi  Sandwichs fundamental 2 BELT sandwich I know the taste New Scramble  Sausage SAUSAGE Sandwich Together POUBL S Bacon Fast Stop D 28 its good  Fundamentals Sandwich 195g 377 kcal W 3300 PLA  The usage is made of disassembled biodegradable raw material PLA After removing the container sticker please discard it with general garbage Fall Tuna Even today no worry 00015g lettuce 1026 897egg 74 egg heating products 769battery bacon 769of tomatoes One in the morning Beef red pepper paste"},
+        {text: "output: Tuna, lettuce, egg, bacon, tomatoes, beef, red pepper paste"},
+        {text: "input: LOTTE Ice Suwonhani Image photo Seed hotteok taste 170 3 10 10 29 6 Frozen Products Ice Milk 6Opposition 90ml 170 KCAL KCAL SMG 338 238 30 Total content per 90ml 13 088 4 3 19g 10mg 2g 028 198 Milk peanuts soybeans eggs contain 12glutinous rice powder 2of seed hot rice cake dogs 40sunflower seeds calorium carbohydrate sugars  Mill peach tomato walnuts pork can be mixed and denied and bad food reporting is 1399 httpwwwtoteconfcokr Me Recipient fee burden 0800246060 1 daily nutritional standard  is 200kcal standard so it may vary depending on the required calories of individuals Distribution Salesman Lotte Confectionery Co Ltd 25Manufacturer Hongyoung Food Co Ltd Hongyoung Food Co Ltd Storage Single item and Exchange Place Purchasing Shop and Headquarters  Damage Compensation according to the Basic Consumer Law  Manufacturing date Full mark Yeon Mon Sun  Cap material inner Polyethylene  container pin material polystyrene Mulis syrup glutinous rice domestic acid sugar non jet jeidang black party oligo free products processed butter Germany Netherlands mixed milk powder foreign Dutch Canada Germany etc Sunflower seeds sunflower seeds US peanut coating sectors peanuts stir fried stir fried black sesame black sesame Chinese Locost bean gum Tamarin de Gum Karagiannan emulsifier 1 cinnamon powder emulsifier refined salt Anato pigs  Lotte Confectionery Open  Its already frozen so do not freeze again after thawing Other"},
+        {text: "output: Milk, peanuts, soybeans, eggs, glutinous rice powder, seed hot rice cake, sunflower seeds, carbohydrate, sugars, peach, tomato, walnuts, pork, syrup, acid sugar, black sesame, locust bean gum, tamarind gum, carrageenan, emulsifier, cinnamon powder, refined salt, anatto."},
         {text: "input: "+ input},
         {text: "output: "},
     ];
@@ -141,6 +170,9 @@ export async function POST(request: NextRequest) {
             imageUrl: fileUrl,
         });
     } catch (error) {
+        if ((error as any).statusCode === 400) {
+            return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+        }
         return NextResponse.json({ error: `An error occurred: ${(error as Error).message}` }, { status: 500 });
     }
 }

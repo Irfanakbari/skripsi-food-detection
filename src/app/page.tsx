@@ -18,7 +18,11 @@ export default function Home() {
     };
 
     const handleUpload = async () => {
-        if (!file) return;
+        if (!file) {
+            setResult({ error: "Please select a file before uploading." });
+            return;
+        }
+
         setLoading(true);
         setResult(null); // Reset result sebelum upload baru
 
@@ -31,15 +35,30 @@ export default function Home() {
                 body: formData,
             });
 
-            if (!response.ok) {
-                throw new Error(`Server error ${response.status}: ${response.statusText}`);
+            // Coba parsing JSON dengan aman
+            let data = null;
+            try {
+                data = await response.json();
+            } catch {
+                setResult({ error: "Invalid input. Make sure the uploaded image contains Korean text." });
+                return;
             }
 
-            const data = await response.json();
+            if (!response.ok) {
+                setResult({ error: data?.error || "Invalid input. Make sure the uploaded image contains Korean text." });
+                return;
+            }
+
             setResult(data);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Upload failed:", error);
-            setResult({ error: "Failed to process the file. Please try again later." });
+
+            const message =
+                error.message.includes("400") ? "Invalid input. Make sure the uploaded image contains Korean text."
+                    : error.message.includes("500") ? "Server error. Please try again later."
+                        : "An unknown error occurred. Please try again.";
+
+            setResult({ error: message });
         } finally {
             setLoading(false);
         }
@@ -64,43 +83,46 @@ export default function Home() {
                         {loading ? "Processing..." : "Upload & Analyze"}
                     </Button>
                     {loading && <Progress className="w-full" value={50} />}
-                    {result?.error && (
+                    {result?.error ? (
                         <div className="mt-4 p-4 bg-red-100 text-red-600 rounded-md">
                             {result.error}
                         </div>
-                    )}
-
-                    {result && (
-                        <div className="mt-8 text-left bg-gray-50 p-6 rounded-lg shadow-md">
-                            <div className={`mb-4 text-center text-lg font-bold rounded p-3 ${
-                                result.detectedNonHalal.length > 0 ? 'bg-red-300' : 'bg-green-300'
-                            }`}>
-                                {result.detectedNonHalal.length > 0 ? (
-                                    <span className="text-red-600">HARAM</span>
-                                ) : (
-                                    <span className="text-green-600">HALAL</span>
-                                )}
-                            </div>
-                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
-                            <div className="space-y-3">
-                                <p className="text-sm text-gray-700"><strong>OCR:</strong> {result.ocrText}</p>
-                                <p className="text-sm text-gray-700"><strong>Cleaned Text:</strong> {result.geminiText}</p>
-                                <p className="text-sm text-gray-700 font-semibold">Detected Ingredients:</p>
-                                <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
-                                    {result.detectedNonHalal.length > 0 ? (
-                                        result.detectedNonHalal.map((item: any, index: number) => (
-                                            <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)})</li>
-                                        ))
+                    ) : (
+                        result && (
+                            <div className="mt-8 text-left bg-gray-50 p-6 rounded-lg shadow-md">
+                                <div className={`mb-4 text-center text-lg font-bold rounded p-3 ${
+                                    result?.detectedNonHalal?.length > 0 ? 'bg-red-300' : 'bg-green-300'
+                                }`}>
+                                    {result?.detectedNonHalal?.length > 0 ? (
+                                        <span className="text-red-600">HARAM</span>
                                     ) : (
-                                        <li className="text-green-600">No non-halal ingredients detected</li>
+                                        <span className="text-green-600">HALAL</span>
                                     )}
-                                </ul>
-                                <div className="flex justify-center mt-4">
-                                    <img src={result.imageUrl} alt="Uploaded" className="w-full max-w-md rounded-lg shadow-md" />
+                                </div>
+                                <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
+                                <div className="space-y-3">
+                                    <p className="text-sm text-gray-700"><strong>OCR:</strong> {result?.ocrText}</p>
+                                    <p className="text-sm text-gray-700"><strong>Cleaned Text:</strong> {result?.geminiText}</p>
+                                    <p className="text-sm text-gray-700 font-semibold">Detected Ingredients:</p>
+                                    <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
+                                        {result?.detectedNonHalal?.length > 0 ? (
+                                            result?.detectedNonHalal?.map((item: any, index: number) => (
+                                                <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)})</li>
+                                            ))
+                                        ) : (
+                                            <li className="text-green-600">No non-halal ingredients detected</li>
+                                        )}
+                                    </ul>
+                                    <div className="flex justify-center mt-4">
+                                        {result?.imageUrl && (
+                                            <img src={result.imageUrl} alt="Uploaded" className="w-full max-w-md rounded-lg shadow-md" />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )
                     )}
+
                 </CardContent>
             </Card>
         </div>
