@@ -44,6 +44,7 @@ const nonHalalIngredients: string[] = [
     "carmine", "E441", "E120", "enzymes", "lipase", "trypsin", "rennin",
     "pepsin", "alkohol", "alcohol", "beer", "wine", "whiskey", "vodka",
     "gin", "rum", "brandy", "tequila", "cider", "sake", "mirin",
+    "red pepper", "red pepper powder", "red pepper powder (Vietnam)",
     "darah", "blood", "black pudding", "blood sausage", "dwaejigogi", "donji", "yugsu","sul","porkfat", "ethanol", "vanilla extract", "vanilin extract", "lecithin", "glycerin", "glycerol", "rennet", "rennin", "dongmulseong" ,"yuji", "tallow", "marshmellow", "glyceride", "hogleather","pig", "wine", "jelly", "bacon", "sow milk"
 ];
 
@@ -157,6 +158,27 @@ export async function POST(request: NextRequest) {
                 }
             } else {
                 console.log(`❌ NO MATCH FOUND for "${word}"`);
+            }
+        });
+
+        const joinedWords = words.join(' '); // Menggabungkan kata-kata menjadi satu string
+        const phrases = joinedWords.split(/,\s*/); // Split kata-kata menjadi array berdasarkan koma
+
+        phrases.forEach(phrase => {
+            const match = fuzzySet.get(phrase);
+
+            if (match && match.length > 0) {
+                const [score, matchedPhrase] = match[0];
+                console.log(`Matching "${phrase}" → Best match: "${matchedPhrase}" (Score: ${score})`);
+
+                if (score >= 0.80) {
+                    console.log(`✅ DETECTED: "${phrase}" -> "${matchedPhrase}" (Score: ${score})`);
+                    detected.push({ word: phrase, match: matchedPhrase, score });
+                } else {
+                    console.log(`❌ NOT DETECTED: Score too low or invalid`);
+                }
+            } else {
+                console.log(`❌ NO MATCH FOUND for "${phrase}"`);
             }
         });
 
