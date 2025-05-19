@@ -1,7 +1,6 @@
 import {Storage} from '@google-cloud/storage';
 import vision from '@google-cloud/vision';
 import {NextRequest, NextResponse} from 'next/server';
-import translate from '@iamtraction/google-translate';
 import FuzzySet from 'fuzzyset.js';
 import {GoogleGenerativeAI} from "@google/generative-ai";
 import {Translate} from "@google-cloud/translate/build/src/v2";
