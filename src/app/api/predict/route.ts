@@ -1,9 +1,10 @@
 import {Storage} from '@google-cloud/storage';
 import vision from '@google-cloud/vision';
 import {NextRequest, NextResponse} from 'next/server';
-import {translate} from '@vitalets/google-translate-api';
+import translate from '@iamtraction/google-translate';
 import FuzzySet from 'fuzzyset.js';
 import {GoogleGenerativeAI} from "@google/generative-ai";
+import {Translate} from "@google-cloud/translate/build/src/v2";
 
 const storage = new Storage({
     credentials: {
@@ -12,6 +13,14 @@ const storage = new Storage({
     },
     projectId: process.env.GCP_PROJECT_ID ?? ''
 });
+const translateClient = new Translate({
+    projectId: process.env.GCP_PROJECT_ID,
+    credentials: {
+        client_email: process.env.GCP_SERVICE_ACCOUNT_EMAIL ?? '',
+        private_key: process.env.GCP_PRIVATE_KEY ?? '',
+    }
+});
+
 const bucketName = 'fitri-user-image';
 const visionClient = new vision.ImageAnnotatorClient({
     credentials: {
@@ -63,14 +72,15 @@ function containsHangul(text: string): boolean {
 }
 
 async function translateToEnglish(source: string, targetLanguage = 'en'): Promise<string> {
-    const result = await translate(source, { to: targetLanguage });
+    // const result = await translate(source, { to: targetLanguage });
+    const [translation, gg] = await translateClient.translate(source, targetLanguage);
 
-    const detectedLanguage = result.raw?.src;
+    // const detectedLanguage = result.raw?.src;
 
     // Cek apakah mengandung huruf Hangul
     const hasHangul = containsHangul(source);
     console.log(hasHangul);
-    console.log(detectedLanguage);
+    // console.log(detectedLanguage);
     // if (detectedLanguage !== 'ko' && !hasHangul) {
     //     const error = new Error('Translation is only allowed for Korean text.');
     //     (error as any).statusCode = 400;
@@ -83,7 +93,8 @@ async function translateToEnglish(source: string, targetLanguage = 'en'): Promis
     // }
 
 
-    return result.text;
+    // return result.text;
+    return translation;
 }
 
 async function runCleaner(input: string) {
@@ -220,6 +231,7 @@ export async function POST(request: NextRequest) {
             imageUrl: fileUrl,
         });
     } catch (error) {
+        console.error(error);
         if ((error as any).statusCode === 400) {
             return NextResponse.json({ error: (error as Error).message }, { status: 400 });
         }
