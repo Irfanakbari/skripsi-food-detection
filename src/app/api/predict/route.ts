@@ -143,6 +143,8 @@ export async function POST(request: NextRequest) {
 
         // Deteksi bahan non-halal
         const detected: { word: string; match: string; score: number }[] = [];
+        const detectedWordsSet = new Set<string>(); // untuk cepat cek duplicate
+
         const words = geminiText.split(/\s+/);
         words.forEach(word => {
             if (word.length < 3) return;
@@ -154,8 +156,14 @@ export async function POST(request: NextRequest) {
                 console.log(`Matching "${word}" → Best match: "${matchedWord}" (Score: ${score})`);
 
                 if (score >= 0.80) {
-                    console.log(`✅ DETECTED: "${word}" -> "${matchedWord}" (Score: ${score})`);
-                    detected.push({ word, match: matchedWord, score });
+                    // Cek apakah sudah terdeteksi sebelumnya
+                    if (!detectedWordsSet.has(matchedWord)) {
+                        console.log(`✅ DETECTED: "${word}" -> "${matchedWord}" (Score: ${score})`);
+                        detected.push({ word, match: matchedWord, score });
+                        detectedWordsSet.add(matchedWord);
+                    } else {
+                        console.log(`⚠️ Duplicate detected for "${matchedWord}", skipping.`);
+                    }
                 } else {
                     console.log(`❌ NOT DETECTED: Score too low or invalid`);
                 }
@@ -175,8 +183,13 @@ export async function POST(request: NextRequest) {
                 console.log(`Matching "${phrase}" → Best match: "${matchedPhrase}" (Score: ${score})`);
 
                 if (score >= 0.80) {
-                    console.log(`✅ DETECTED: "${phrase}" -> "${matchedPhrase}" (Score: ${score})`);
-                    detected.push({ word: phrase, match: matchedPhrase, score });
+                    if (!detectedWordsSet.has(matchedPhrase)) {
+                        console.log(`✅ DETECTED: "${phrase}" -> "${matchedPhrase}" (Score: ${score})`);
+                        detected.push({ word: phrase, match: matchedPhrase, score });
+                        detectedWordsSet.add(matchedPhrase);
+                    } else {
+                        console.log(`⚠️ Duplicate detected for "${matchedPhrase}", skipping.`);
+                    }
                 } else {
                     console.log(`❌ NOT DETECTED: Score too low or invalid`);
                 }
