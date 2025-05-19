@@ -73,7 +73,7 @@ function containsHangul(text: string): boolean {
 
 async function translateToEnglish(source: string, targetLanguage = 'en'): Promise<string> {
     // const result = await translate(source, { to: targetLanguage });
-    const [translation, gg] = await translateClient.translate(source, targetLanguage);
+    const [translation] = await translateClient.translate(source, targetLanguage);
 
     // const detectedLanguage = result.raw?.src;
 
