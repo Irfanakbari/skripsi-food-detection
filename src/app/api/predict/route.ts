@@ -37,15 +37,18 @@ const generationConfig = {
 };
 
 const nonHalalIngredients: string[] = [
-    "babi", "pig", "pork", "ham", "bacon", "lard", "sow", "swine",
+    "pig", "pork", "ham", "bacon", "lard", "sow", "swine",
     "hog", "boar", "suckling pig", "pork chop", "pork loin",
     "chorizo", "salami", "prosciutto", "mortadella",
     "capicola", "pancetta", "guanciale", "gelatin", "gelatine", "rennet",
     "carmine", "E441", "E120", "enzymes", "lipase", "trypsin", "rennin",
     "pepsin", "alkohol", "alcohol", "beer", "wine", "whiskey", "vodka",
     "gin", "rum", "brandy", "tequila", "cider", "sake", "mirin",
-    "red pepper", "red pepper powder", "red pepper powder (Vietnam)",
-    "darah", "blood", "black pudding", "blood sausage", "dwaejigogi", "donji", "yugsu","sul","porkfat", "ethanol", "vanilla extract", "vanilin extract", "lecithin", "glycerin", "glycerol", "rennet", "rennin", "dongmulseong" ,"yuji", "tallow", "marshmellow", "glyceride", "hogleather","pig", "wine", "jelly", "bacon", "sow milk"
+    "darah", "blood", "black pudding", "blood sausage", "dwaejigogi", "babi", "donji", "yugsu","sul","porkfat", "ethanol", "red pepper powder", "vanilla extract", "vanilin extract", "glycerin", "glycerol", "dongmulseong" ,
+    "yuji", "tallow", "marshmellow", "broth", "glyceride", "hogleather", "jelly", "sow milk", "adenosine 5' monophospate", "carmine color", "cochineal color", "confectionary color",
+    "cytidene 5'- monophosphate", "disodium uridine 5'- monophosphate", "erythritol", "fermented cider", "hard cider", "red pepper", "inosito 5'- monophosphate", "l-cysteine", "nucleotides", "rainbow sprinkles",
+    "sherry wine", "sovent extracted modified lecithin", "soya sauce", "surimi", "vanilla bean specks", "wine vinegar", "yeast extract from brewer yeast", "edible bone phosphate", "acid casein", "beer batters",
+    "beer flavor", "brewer's yeast extract", "confectionary glaze", "rosemary extract", "soya sauce (naturally brewed)"
 ];
 
 const fuzzySet = FuzzySet(nonHalalIngredients);
