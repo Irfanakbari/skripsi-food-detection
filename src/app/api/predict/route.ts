@@ -76,11 +76,11 @@ async function translateToEnglish(source: string, targetLanguage = 'en'): Promis
     //     (error as any).statusCode = 400;
     //     throw error;
     // }
-    if (!hasHangul) {
-        const error = new Error('Translation is only allowed for Korean text.');
-        (error as any).statusCode = 400;
-        throw error;
-    }
+    // if (!hasHangul) {
+    //     const error = new Error('Translation is only allowed for Korean text.');
+    //     (error as any).statusCode = 400;
+    //     throw error;
+    // }
 
 
     return result.text;

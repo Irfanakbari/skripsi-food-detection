@@ -39,15 +39,29 @@ export default function Home() {
             let data = null;
             try {
                 data = await response.json();
-            } catch {
-                setResult({ error: "Invalid input. Make sure the uploaded image contains Korean text." });
+            } catch (err: any) {
+                const message = err?.message?.trim();
+                setResult({
+                    error: message || "Gagal membaca respon dari server. Pastikan gambar yang diunggah berisi teks Korea.",
+                });
                 return;
             }
 
             if (!response.ok) {
-                setResult({ error: data?.error || "Invalid input. Make sure the uploaded image contains Korean text." });
+                let message = "";
+
+                if (response.status === 400) {
+                    message = data?.error?.trim() || "Input tidak valid. Pastikan gambar yang diunggah berisi teks Korea.";
+                } else if (response.status === 500) {
+                    message = "Terjadi kesalahan pada server. Silakan coba lagi nanti.";
+                } else {
+                    message = data?.error?.trim() || "Permintaan gagal. Silakan periksa kembali file yang Anda unggah.";
+                }
+
+                setResult({ error: message });
                 return;
             }
+
 
             setResult(data);
         } catch (error: any) {
