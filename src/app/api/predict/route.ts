@@ -58,21 +58,26 @@ const fuzzySet = FuzzySet(nonHalalIngredients);
 //     return text;
 // }
 
+function containsHangul(text: string): boolean {
+    return /[\uAC00-\uD7AF]/.test(text);
+}
+
 async function translateToEnglish(source: string, targetLanguage = 'en'): Promise<string> {
     const result = await translate(source, { to: targetLanguage });
 
-    // Ambil bahasa sumber dari properti `raw.src`
     const detectedLanguage = result.raw?.src;
 
-    if (detectedLanguage !== 'ko') {
+    // Cek apakah mengandung huruf Hangul
+    const hasHangul = containsHangul(source);
+
+    if (detectedLanguage !== 'ko' && !hasHangul) {
         const error = new Error('Translation is only allowed for Korean text.');
-        (error as any).statusCode = 400; // Tandai error dengan status 400
+        (error as any).statusCode = 400;
         throw error;
     }
 
     return result.text;
 }
-
 
 async function runCleaner(input: string) {
     const parts = [
