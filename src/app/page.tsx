@@ -6,6 +6,7 @@ import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Progress} from "@/components/ui/progress";
 import {UploadCloud} from "lucide-react";
+import imageCompression from "browser-image-compression";
 
 export default function Home() {
     const [file, setFile] = useState<File | null>(null);
@@ -23,11 +24,19 @@ export default function Home() {
             return;
         }
 
+        const options = {
+            maxSizeMB: 0.8,            // maksimal ukuran file setelah kompres (dalam MB)
+            maxWidthOrHeight: 1024,  // resolusi maksimal (akan resize jika lebih besar)
+            useWebWorker: true,
+        };
+
         setLoading(true);
         setResult(null); // Reset result sebelum upload baru
 
+        const compressedFile = await imageCompression(file, options);
+
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", compressedFile);
 
         try {
             const response = await fetch("/api/predict", {
