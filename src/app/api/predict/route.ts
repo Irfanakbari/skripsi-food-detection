@@ -44,6 +44,8 @@ const generationConfig = {
     responseMimeType: "text/plain",
 };
 
+
+
 const nonHalalIngredients: string[] = [
     "pig", "pork", "ham", "bacon", "lard", "sow", "swine",
     "hog", "boar", "suckling pig", "pork chop", "pork loin",
@@ -59,7 +61,45 @@ const nonHalalIngredients: string[] = [
     "beer flavor", "brewer's yeast extract", "confectionary glaze", "rosemary extract", "soya sauce (naturally brewed)"
 ];
 
+const syubhatIngredients: string[] = [
+    "riboflavin", "lactofavin", "vitamin B2", "chlorophyll", "C.I. 75810", "copper complexes of chlorophyll", "carbon black",
+    "vegetable carbon", "alpha-", "beta-", "gamma-carotene", "C.I. 75130", "annatto", "bixin", "norbixin", "C.I. 75120", "capsanthin",
+    "capsorubin", "paprika extract", "lycopene", "C.I. 75125", "beta-apo-8'-carotenal", "beta-8’-apocarotenal",
+    "ethyl ester of Beta-apo-8-carotenoic acid", "flavoxanthin", "lutein", "cryptoxanthin", "rubixanthin", "violaxanthin", "rhodoxanthin",
+    "canthaxanthin", "C.I. 40850", "beet Red", "betanin", "betanidin", "anthocyanins", "calcium carbonate", "chalk", "C.I. 77220",
+    "nisin", "natamycin", "pimaricin", "potassium nitrate", "saltpetre", "lactic acid", "propionic acid", "sodium propionate", "calcium propionate",
+    "potassium propionate", "fumaric acid", "l-Ascorbic acid", "ascorbyl palmitate", "erythorbic acid", "iso-ascorbic acid", "sodium erythorbate",
+    "sodium iso-ascorbate", "tert-butylhydroquinone", "TBHQ", "butylated hydroxyanisole", "BHA", "butylated hydroxytoluene", "BHT", "lecithins",
+    "sodium lactate", "potassium lactate", "calcium lactate", "ammonium lactate", "magnesium lactate", "citric acid", "sodium citrates",
+    "potassium citrates", "calcium citrates", "tartaric acid", "sodium tartrate", "potassium tartrate", "Potassium hydrogen tartrate", "cream of tartar",
+    "potassium sodium tartrate", "metatartaric acid", "succinic acid", "sodium fumarate", "potassium fumarate", "calcium fumarate", "triammonium citrate",
+    "ammonium ferric citrate", "xanthan gum", "corn sugar gum", "sorbitol", "sorbitol syrup", "polyoxyethylene (8) stearate", "polyoxyethylene (40) stearate",
+    "polyoxyethylene (20) sorbitan monolaurate", "polysorbate 20", "tween 20", "polyoxyethylene (20) sorbitan mono-oleate", "polysorbate 80", "tween 80",
+    "polyoxyethylene (20) sorbitan monopalmitate", "polysorbate 40", "tween 40", "polyoxyethylene (20) sorbitan monostearate", "polysorbate 60", "tween 60",
+    "polyoxyethylene (20) sorbitan tristearate", "polysorbate 65", "tween 65", "sodium, potassium and calcium salts of fatty acids", "mono-and diglycerides of fatty acids",
+    "various esters of glycerol", "sucrose esters of fatty acids", "sucroglycerides", "polyglycerol esters of fatty acids", "polyglycerol polyricinoleate", "propane-1,2-diol esters of fatty acids",
+    "sodium stearoyl-2-lactylate", "calcium stearoyl-2-lactylate", "stearyl tartrate", "sorbitan monostearate", "sorbitan tristearate", "span 65", "sorbitan monolaurate",
+    "span 20", "sorbitan monooleate", "span 80", "sorbitan monopalmitate", "span 40", "stearic acid", "Magnesium Stearate", "l-Glutamic acid", "monosodium glutamate", "monopotassium glutamate",
+    "calcium glutamate", "disodium guanylate", "disodium inosinate", "sodium 5'-ribonucleotide", "beeswax", "shellac", "l-cysteine hydrochloride", "hydrogenated glucose syrup",
+    "polydextrose", "enzyme-treated starch", "ethyl alcohol", "triacetin", "glycerol triacetate", "propylene glycol", "yellow 2G", "red 2G", "brilliant blue FCF", "brown FK", "brown HT",
+    "polyoxyethane (8) stearate", "polyoxyethane (40) stearate", "polyoxyethane (20) sorbitan", "polysorbate 20", "polyoxyethane (20) sorbitan mono-oleate", "polysorbate 80",
+    "polyoxyethane (20) sorbitan monopalmitate", "polysorbate 40", "polyoxyethane (20) sorbitan monostearate", "polysorbate 60", "polyoxyethane (20) sorbitan tristearate",
+    "polysorbate 65", "polyglycerol esters of polycondensed esters of caster Oil", "lactylated fatty acid esters of glycerol and propane-1,2-diol", "sorbitan monostearate", "sorbitan tristearate",
+    "sorbitan monolaurate", "sorbitan mono-oleate", "sorbitan monopalmitate", "calcium polyphosphates", "aluminium calcium silicate", "stearic acid", "magnesium stearate", "l-glutamic acid",
+    "calcium glutamate", "sodium guanylate", "sodium inosinate", "sodium5-ribonucleotide", "refined microcrystalline wax", "l-cysteine hydrochloride", "adenosine 5′ monophosphate", "artificial colors",
+    "FD&C yellow No. 5", "artificial flavors", "aspartame", "balsamic vinegar", "behenyl alcohol", "docosanol", "beta-carotene", "butter fat lipolyzed", "buttermilk solids", "calcium stearate",
+    "calcium stearoyl lactylate", "Carrageenan", "caseinates", "cetyl alcohol", "cheese powder", "cream of tarter", "cultured cream lipolyzed", "cultured milk", "DATEM", "di- acetyl T=tartrate ester of monoglycerides",
+    "diglyceride", "disodium inosinate", "dried milk", "enzyme modified lecithin", "enzyme modified soya lecithin", "enzymes in cheeses", "enzymes in dairy products", "ethoxylated mono- and diglycerides",
+    "folic acid", "glycerol ester", "glycerol monostearate", "grape seed extract", "grape skin powder", "grape seed oil", "hydroxylated lecithin", "lactose", "magnesium stearate", "margarine", "monoglycerides and diglycerides",
+    "natural flavors", "niacin", "vitamin B3","nonfat dry milk", "pectin", "polyglycerol esters of fatty Acids", "polyoxythylene sorbitan monostearate", "polysorbate 60", "polysorbate 65", "polysorbate 80",
+    "propylene glycol monostearate", "rennet casein", "sodium lauryl sulfate", "softener", "sorbitan monostearate", "soy protein concentrate", "stevia", "taurine", "TBHQ", "thiamine mononitrate", "tocopherol", "vitamin E",
+    "turmeric", "turmeric extract", "turola yeast", "vanilla bean powder", "vanilla beans,", "vitamin A", "retinol", "vitamin B12", "cyanocobalamin", "thiamine", "vitamin B1", "vitamin B2", "vitamin B5", "pantotherric acid",
+    "vitamin B6", "pyridoxine", "ascorbic acid", "vitamin D", "calciferol", "vitamin E", "tocopherol", "vitamin K", "whey", "whey powder", "whey protein concentrate", "worcestershire sauce"
+];
+
 const fuzzySet = FuzzySet(nonHalalIngredients);
+const fuzzySetSyubhat = FuzzySet(syubhatIngredients);
+
 
 // async function translateToEnglish(source: string, targetLanguage = 'en'): Promise<string> {
 //     const { text } = await translate(source, { to: targetLanguage });
@@ -163,62 +203,60 @@ export async function POST(request: NextRequest) {
 
         const geminiText = await runCleaner(cleanedText)
 
-        // Deteksi bahan non-halal
+        // Deteksi bahan non-halal & syubhat
         const detected: { word: string; match: string; score: number }[] = [];
+        const detectedSyubhat: { word: string; match: string; score: number }[] = [];
+
         const detectedWordsSet = new Set<string>(); // untuk cepat cek duplicate
+        const detectedSyubhatSet = new Set<string>();
 
-        const words = geminiText.split(/\s+/);
-        words.forEach(word => {
-            if (word.length < 3) return;
 
+        function checkAndPush(
+            word: string,
+            fuzzySet: FuzzySet,
+            threshold: number,
+            detectedList: typeof detected,
+            detectedSet: Set<string>,
+            label: string
+        ) {
             const match = fuzzySet.get(word);
-
             if (match && match.length > 0) {
                 const [score, matchedWord] = match[0];
                 console.log(`Matching "${word}" → Best match: "${matchedWord}" (Score: ${score})`);
-
-                if (score >= 0.80) {
-                    // Cek apakah sudah terdeteksi sebelumnya
-                    if (!detectedWordsSet.has(matchedWord)) {
-                        console.log(`✅ DETECTED: "${word}" -> "${matchedWord}" (Score: ${score})`);
-                        detected.push({ word, match: matchedWord, score });
-                        detectedWordsSet.add(matchedWord);
+                if (score >= threshold) {
+                    if (!detectedSet.has(matchedWord)) {
+                        console.log(`✅ DETECTED (${label}): "${word}" -> "${matchedWord}" (Score: ${score})`);
+                        detectedList.push({ word, match: matchedWord, score });
+                        detectedSet.add(matchedWord);
                     } else {
-                        console.log(`⚠️ Duplicate detected for "${matchedWord}", skipping.`);
+                        console.log(`⚠️ Duplicate ${label} detected for "${matchedWord}", skipping.`);
                     }
                 } else {
-                    console.log(`❌ NOT DETECTED: Score too low or invalid`);
+                    console.log(`❌ NOT DETECTED (${label}): Score too low`);
                 }
             } else {
-                console.log(`❌ NO MATCH FOUND for "${word}"`);
+                console.log(`❌ NO MATCH FOUND (${label}) for "${word}"`);
             }
+        }
+
+
+
+        const words = geminiText.split(/\s+/);
+        // ✨ Cek per kata
+        words.forEach(word => {
+            if (word.length < 3) return;
+            checkAndPush(word, fuzzySet, 0.80, detected, detectedWordsSet, 'Haram');
+            checkAndPush(word, fuzzySetSyubhat, 0.80, detectedSyubhat, detectedSyubhatSet, 'Syubhat');
         });
 
-        const joinedWords = words.join(' '); // Menggabungkan kata-kata menjadi satu string
-        const phrases = joinedWords.split(/,\s*/); // Split kata-kata menjadi array berdasarkan koma
+        // ✨ Cek per frasa (dipisah koma)
+        const phrases = geminiText.split(/,\s*/);
 
         phrases.forEach(phrase => {
-            const match = fuzzySet.get(phrase);
-
-            if (match && match.length > 0) {
-                const [score, matchedPhrase] = match[0];
-                console.log(`Matching "${phrase}" → Best match: "${matchedPhrase}" (Score: ${score})`);
-
-                if (score >= 0.80) {
-                    if (!detectedWordsSet.has(matchedPhrase)) {
-                        console.log(`✅ DETECTED: "${phrase}" -> "${matchedPhrase}" (Score: ${score})`);
-                        detected.push({ word: phrase, match: matchedPhrase, score });
-                        detectedWordsSet.add(matchedPhrase);
-                    } else {
-                        console.log(`⚠️ Duplicate detected for "${matchedPhrase}", skipping.`);
-                    }
-                } else {
-                    console.log(`❌ NOT DETECTED: Score too low or invalid`);
-                }
-            } else {
-                console.log(`❌ NO MATCH FOUND for "${phrase}"`);
-            }
+            checkAndPush(phrase, fuzzySet, 0.80, detected, detectedWordsSet, 'Haram');
+            checkAndPush(phrase, fuzzySetSyubhat, 0.80, detectedSyubhat, detectedSyubhatSet, 'Syubhat');
         });
+
 
 
         return NextResponse.json({
@@ -227,6 +265,7 @@ export async function POST(request: NextRequest) {
             cleanedText,
             geminiText,
             detectedNonHalal: detected,
+            detectedSyubhat: detectedSyubhat,
             imageUrl: fileUrl,
         });
     } catch (error) {

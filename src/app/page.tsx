@@ -113,14 +113,24 @@ export default function Home() {
                     ) : (
                         result && (
                             <div className="mt-8 text-left bg-gray-50 p-6 rounded-lg shadow-md">
-                                <div className={`mb-4 text-center text-lg font-bold rounded p-3 ${
-                                    result?.detectedNonHalal?.length > 0 ? 'bg-red-300' : 'bg-green-300'
-                                }`}>
+                                <div
+                                    className={`mb-4 text-center text-lg font-bold rounded p-3 ${
+                                        result?.detectedNonHalal?.length > 0
+                                            ? 'bg-red-300'
+                                            : result?.detectedSyubhat?.length > 0
+                                                ? 'bg-orange-300'
+                                                : 'bg-green-300'
+                                    }`}
+                                >
                                     {result?.detectedNonHalal?.length > 0 ? (
                                         <span className="text-red-600">HARAM</span>
-                                    ) : (
+                                    ) : null}
+                                    {result?.detectedSyubhat?.length > 0 ? (
+                                        <span className="text-orange-600">SYUBHAT</span>
+                                    ) : null}
+                                    {(result?.detectedNonHalal?.length == 0 && result?.detectedSyubhat?.length == 0)  ? (
                                         <span className="text-green-600">HALAL</span>
-                                    )}
+                                    ) : null}
                                 </div>
                                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
                                 <div className="space-y-3">
@@ -130,11 +140,14 @@ export default function Home() {
                                     <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
                                         {result?.detectedNonHalal?.length > 0 ? (
                                             result?.detectedNonHalal?.map((item: any, index: number) => (
-                                                <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)})</li>
+                                                <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)}/1.00)</li>
                                             ))
-                                        ) : (
-                                            <li className="text-green-600">No non-halal ingredients detected</li>
-                                        )}
+                                        ) : null}
+                                        {result?.detectedSyubhat?.length > 0 ? (
+                                            result?.detectedSyubhat?.map((item: any, index: number) => (
+                                                <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)}/1.00)</li>
+                                            ))
+                                        ) : null}
                                     </ul>
                                     <div className="flex justify-center mt-4">
                                         {result?.imageUrl && (
