@@ -114,25 +114,8 @@ async function translateToEnglish(source: string, targetLanguage = 'en'): Promis
     // const result = await translate(source, { to: targetLanguage });
     const [translation] = await translateClient.translate(source, targetLanguage);
 
-    // const detectedLanguage = result.raw?.src;
-
-    // Cek apakah mengandung huruf Hangul
     const hasHangul = containsHangul(source);
     console.log(hasHangul);
-    // console.log(detectedLanguage);
-    // if (detectedLanguage !== 'ko' && !hasHangul) {
-    //     const error = new Error('Translation is only allowed for Korean text.');
-    //     (error as any).statusCode = 400;
-    //     throw error;
-    // }
-    // if (!hasHangul) {
-    //     const error = new Error('Translation is only allowed for Korean text.');
-    //     (error as any).statusCode = 400;
-    //     throw error;
-    // }
-
-
-    // return result.text;
     return translation;
 }
 
@@ -261,7 +244,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             ocrText,
-            // translatedText,
+            translatedText,
             cleanedText,
             geminiText,
             detectedNonHalal: detected,

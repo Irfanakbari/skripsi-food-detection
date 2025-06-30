@@ -135,6 +135,7 @@ export default function Home() {
                                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results</h2>
                                 <div className="space-y-3">
                                     <p className="text-sm text-gray-700"><strong>OCR:</strong> {result?.ocrText}</p>
+                                    <p className="text-sm text-gray-700"><strong>Translated:</strong> {result?.translatedText}</p>
                                     <p className="text-sm text-gray-700"><strong>Cleaned Text:</strong> {result?.geminiText}</p>
                                     <p className="text-sm text-gray-700 font-semibold">Detected Ingredients:</p>
                                     <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
