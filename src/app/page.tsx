@@ -141,12 +141,12 @@ export default function Home() {
                                     <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
                                         {result?.detectedNonHalal?.length > 0 ? (
                                             result?.detectedNonHalal?.map((item: any, index: number) => (
-                                                <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)}/1.00)</li>
+                                                <li key={index}>{item.word} (Matched: {item.match})</li>
                                             ))
                                         ) : null}
                                         {result?.detectedSyubhat?.length > 0 ? (
                                             result?.detectedSyubhat?.map((item: any, index: number) => (
-                                                <li key={index}>{item.word} (Matched: {item.match}, Score: {item.score.toFixed(2)}/1.00)</li>
+                                                <li key={index}>{item.word} (Matched: {item.match})</li>
                                             ))
                                         ) : null}
                                     </ul>
