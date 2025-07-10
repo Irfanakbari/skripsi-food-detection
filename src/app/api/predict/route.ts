@@ -93,7 +93,7 @@ const syubhatIngredients: string[] = [
     "folic acid", "glycerol ester", "glycerol monostearate", "grape seed extract", "grape skin powder", "grape seed oil", "hydroxylated lecithin", "lactose", "magnesium stearate", "margarine", "monoglycerides and diglycerides",
     "natural flavors", "niacin", "vitamin B3","nonfat dry milk", "pectin", "polyglycerol esters of fatty Acids", "polyoxythylene sorbitan monostearate", "polysorbate 60", "polysorbate 65", "polysorbate 80",
     "propylene glycol monostearate", "rennet casein", "sodium lauryl sulfate", "softener", "sorbitan monostearate", "soy protein concentrate", "stevia", "taurine", "TBHQ", "thiamine mononitrate", "tocopherol",
-    "turmeric", "turmeric extract", "turola yeast", "vanilla bean powder", "vanilla beans,", "vitamin A", "retinol", "vitamin B12", "cyanocobalamin", "thiamine", "vitamin B1", "vitamin B2", "vitamin B5", "pantotherric acid",
+    "turmeric", "turmeric extract", "turola yeast", "vanilla bean powder", "vanilla beans,", "retinol", "vitamin B12", "cyanocobalamin", "thiamine", "vitamin B1", "vitamin B2", "vitamin B5", "pantotherric acid",
     "vitamin B6", "pyridoxine", "ascorbic acid", "calciferol", "tocopherol",  "whey", "whey powder", "whey protein concentrate", "worcestershire sauce"
 ];
 
