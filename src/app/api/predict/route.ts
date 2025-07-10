@@ -62,7 +62,7 @@ const nonHalalIngredients: string[] = [
 ];
 
 const syubhatIngredients: string[] = [
-    "riboflavin", "lactofavin", "vitamin B2", "chlorophyll", "C.I. 75810", "copper complexes of chlorophyll", "carbon black",
+    "riboflavin", "lactofavin", "chlorophyll", "C.I. 75810", "copper complexes of chlorophyll", "carbon black",
     "vegetable carbon", "alpha-", "beta-", "gamma-carotene", "C.I. 75130", "annatto", "bixin", "norbixin", "C.I. 75120", "capsanthin",
     "capsorubin", "paprika extract", "lycopene", "C.I. 75125", "beta-apo-8'-carotenal", "beta-8’-apocarotenal",
     "ethyl ester of Beta-apo-8-carotenoic acid", "flavoxanthin", "lutein", "cryptoxanthin", "rubixanthin", "violaxanthin", "rhodoxanthin",
