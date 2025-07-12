@@ -120,7 +120,7 @@ async function translateToEnglish(source: string, targetLanguage = 'en'): Promis
 
 async function runCleaner(input: string) {
     const parts = [
-        {text: "Please remove unnecessary word in food commposition, and extract only food composition."},
+        {text: "Please remove unnecessary word in commposition, and extract only composition."},
         {text: "input: Food Type Miso contents G raw material name and content purified water, soybean, sun salt, wheat, alcohol, alcohol, long -sized soybean, wheat containing expiration date, mold, and day of packaging, leaded polyethylene inner, container polypropylene, lactation 제조원 및 판매원 샘표식품 주식회사 본사 서울시 중구 충무로 공장 충청북도 영동군 용산면 용심로 반품 및 교환처 본사 및 구입처 본 제품은 소비자 기본법의 일반적 소비자 분쟁해결 기준에 의거, 교환 등 보상을 받을 수 있습니다 사용 및 보관시 주의사항 Please keep the direct sunlight at room temperature and keep it refrigerated after opening. Poe is burdened SGS by Supplier Plastic PP container, lid, label PP lead paper"},
         {text: "output: purified water, soybean, sun salt, wheat, alcohol, alcohol, long -sized soybean, wheat"},
         {text: "input: Contents G CJ Premial Snow White Ribs Seasoned Ribs Seasoned Ribs Seasoned Yeonmu -eup Jukbon Gil Foods Report Non -Eup Status Report Number Consumer Number Consumer Low room temperature storage, and after opening, refrigerated in the refrigerator, container glass Amino acid surface -to -soybeans, brewing, brewing, brewed, brewed, brewed, soybeans, refined stations, sugar, other fructose, bafure pear domestic, vitamin C, purified water, onion pure Chinese, minced garlic apple pure apple Paemit, Caramel Soldier III, Pepper Pepper, Pepper Primulates, Mountain Controls, Zantan Sword, Citrus Extract"},
