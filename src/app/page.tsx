@@ -87,6 +87,14 @@ export default function Home() {
         }
     };
 
+    function highlightDetectedWords(text: string, detectedWords: string[]) {
+        if (!text) return '';
+        const wordsSet = new Set(detectedWords.map(word => word.toLowerCase()));
+        const regex = new RegExp(`\\b(${Array.from(wordsSet).join('|')})\\b`, 'gi');
+        return text.replace(regex, (match) => `<strong class="text-red-600">${match}</strong>`);
+    }
+
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
@@ -136,7 +144,20 @@ export default function Home() {
                                 <div className="space-y-3">
                                     <p className="text-sm text-gray-700"><strong>OCR:</strong> {result?.ocrText}</p>
                                     <p className="text-sm text-gray-700"><strong>Translated:</strong> {result?.translatedText}</p>
-                                    <p className="text-sm text-gray-700"><strong>Cleaned Text:</strong> {result?.geminiText}</p>
+                                    <p className="text-sm text-gray-700">
+                                      <strong>Cleaned Text:</strong>{' '}
+                                      <span
+                                        dangerouslySetInnerHTML={{
+                                          __html: highlightDetectedWords(
+                                            result?.geminiText || '',
+                                            [
+                                              ...(result?.detectedNonHalal?.map((d: any) => d.word) || []),
+                                              ...(result?.detectedSyubhat?.map((d: any) => d.word) || []),
+                                            ]
+                                          ),
+                                        }}
+                                      />
+                                    </p>                                    
                                     <p className="text-sm text-gray-700 font-semibold">Detected Ingredients:</p>
                                     <ul className="list-disc list-inside text-sm text-red-600 bg-white p-4 rounded-md shadow-sm">
                                         {result?.detectedNonHalal?.length > 0 ? (
